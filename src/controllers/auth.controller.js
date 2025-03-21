@@ -1,8 +1,11 @@
 import db from '../models/index.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import 'dotenv/config'
+import 'dotenv/config';
 import { Rol } from '../constants/index.js';
+import { clientConfig, getClientConfig } from '../config/openid.js';
+import 'dotenv/config';
+import * as client from 'openid-client';
 
 const User = db.user;
 const Role = db.role;
@@ -71,4 +74,79 @@ export const signin = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// Ciudadanía Digital Autenticación
+export const loginCD = async (req, res) => {
+  const config = await getClientConfig();
+
+  const code_verifier = client.randomPKCECodeVerifier();
+  const code_challenge = await client.calculatePKCECodeChallenge(code_verifier);
+  const state = client.randomState();
+
+  // Guardar en sesión
+  req.session.code_verifier = code_verifier;
+  console.log('code_verifie', code_verifier)
+  req.session.state = state;
+  console.log('state', state)
+  console.log('se guard???', req.session)
+
+  const parameters = {
+    redirect_uri: clientConfig.redirectUris,
+    scope: clientConfig.scope,
+    code_challenge,
+    code_challenge_method: 'S256',
+  };
+
+  const redirectTo = client.buildAuthorizationUrl(config, parameters);
+
+  res.redirect(redirectTo);
+};
+
+export const callback = async (req, res) => {
+  console.log('==========> callback');
+  console.log('==========> callback1111');
+  const config = await getClientConfig();
+  console.log('==========> callback1112');
+  const params = req.query;
+  console.log('==========> callback1113', params);
+  console.log('==========> callback1113', req.session);
+
+ /*  if (req.session.state !== params.state) {
+    return res.status(400).send('Invalid state');
+  } */
+
+  console.log('iss', params.iss);
+  console.log('1111', req.session);
+  console.log('1111', req.session.code_verifier);
+  console.log('1111', req.session.state);
+
+
+  let getCurrentUrl = (req) => {
+    return new URL(req.protocol + '://' + req.get('host') + req.originalUrl);
+  };
+  console.log('no entiend', getCurrentUrl(req))
+  console.log('no entiend', getCurrentUrl(req).href)
+  const tokenSet = await client.authorizationCodeGrant(
+    config,
+    new URL(getCurrentUrl(req)),
+    {
+      pkceCodeVerifier: req.session.code_verifier,
+      expectedState: req.session.state,
+    }
+  );
+
+  console.log('tokenset--------------->', tokenSet);
+
+  const userInfo = await client.userinfo(tokenSet.access_token);
+  console.log('UserInfo', userInfo);
+
+  // Limpiar sesión
+  delete req.session.code_verifier;
+  delete req.session.state;
+
+  // Aquí podrías guardar info en sesión si deseas
+  req.session.user = userInfo;
+
+  res.redirect('http://localhost:5173/home');
 };

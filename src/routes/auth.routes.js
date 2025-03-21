@@ -1,5 +1,5 @@
 import express from 'express';
-import { signup, signin } from '../controllers/auth.controller.js';
+import { signup, signin, callback, loginCD } from '../controllers/auth.controller.js';
 import { verifySignUp } from '../middlewares/index.js';
 
 const router = express.Router();
@@ -13,5 +13,9 @@ router.post(
 
 // Signin Route
 router.post('/signin', signin);
+
+// Ciudadanía Digital Auteticación
+router.get('/ciudadania', loginCD)
+router.get('/callback', callback)
 
 export default router;

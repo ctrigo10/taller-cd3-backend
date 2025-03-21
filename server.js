@@ -6,13 +6,14 @@ import authRoutes from './src/routes/auth.routes.js';
 import userRoutes from './src/routes/user.routes.js';
 import documentRoutes from './src/routes/document.routes.js';
 import { Rol } from './src/constants/index.js';
-import session from 'express-session'
+import session from 'express-session';
 import 'dotenv/config';
 
 const app = express();
 
 const corsOptions = {
   origin: process.env.URL_FRONTEND,
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
@@ -26,6 +27,8 @@ app.use(
     cookie: {
       secure: false, // poner en true si usas HTTPS
       httpOnly: true,
+      sameSite: 'lax',      // O 'strict', o 'none' (si usás cross-domain + HTTPS)
+      maxAge: 1000 * 60 * 5 // 5 minutos
     },
   })
 );
@@ -40,6 +43,14 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/test', userRoutes);
 app.use('/api/documents', documentRoutes);
+app.get('/set', (req, res) => {
+  req.session.test = 'Hol111a';
+  res.send('Sesión guardada');
+});
+
+app.get('/get', (req, res) => {
+  res.send(req.session.test || 'No hay sesión');
+});
 
 const PORT = process.env.PORT || 3000;
 
