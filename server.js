@@ -6,6 +6,7 @@ import authRoutes from './src/routes/auth.routes.js';
 import userRoutes from './src/routes/user.routes.js';
 import documentRoutes from './src/routes/document.routes.js';
 import { Rol } from './src/constants/index.js';
+import session from 'express-session'
 import 'dotenv/config';
 
 const app = express();
