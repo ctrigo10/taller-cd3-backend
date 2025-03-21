@@ -17,6 +17,17 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false, // poner en true si usas HTTPS
+      httpOnly: true,
+    },
+  })
+);
 
 app.get('/', (req, res) => {
   res.json({
