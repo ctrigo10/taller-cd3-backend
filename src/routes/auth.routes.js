@@ -21,8 +21,6 @@ router.post('/signin', signin);
 
 // Ciudadania Route
 router.get('/ciudadania', loginCiudadania);
-
-
 router.get('/callback', callback);
 
 export default router;

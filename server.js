@@ -6,18 +6,17 @@ import authRoutes from './src/routes/auth.routes.js';
 import userRoutes from './src/routes/user.routes.js';
 import documentRoutes from './src/routes/document.routes.js';
 import { Rol } from './src/constants/index.js';
-import session from 'express-session'
+import session from 'express-session';
 import 'dotenv/config';
 
 const app = express();
 
-const corsOptions = {
+app.use(cors({
   origin: process.env.URL_FRONTEND,
-  credentials: true
-};
-
-app.set('trust proxy', 1);
-app.use(cors(corsOptions));
+  credentials: true,
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'sesion-secret',
@@ -26,6 +25,8 @@ app.use(
     cookie: {
       secure: false, // poner en true si usas HTTPS
       httpOnly: true,
+      sameSite: 'lax',      // O 'strict', o 'none' (si usás cross-domain + HTTPS)
+      maxAge: 1000 * 60 * 5 // 5 minutos
     },
   })
 );

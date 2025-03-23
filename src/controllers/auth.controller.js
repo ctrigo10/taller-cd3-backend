@@ -5,6 +5,7 @@ import 'dotenv/config';
 import { Rol } from '../constants/index.js';
 import crypto from 'crypto';
 import axios from 'axios';
+import 'dotenv/config';
 
 const User = db.user;
 const Role = db.role;
