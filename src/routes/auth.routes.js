@@ -3,7 +3,8 @@ import {
   signup,
   signin,
   loginCiudadania,
-  callback
+  callback,
+  logout
 } from '../controllers/auth.controller.js';
 import { verifySignUp } from '../middlewares/index.js';
 
@@ -19,8 +20,9 @@ router.post(
 // Signin Route
 router.post('/signin', signin);
 
-// Ciudadania Route
+// Ciudadania Routes
 router.get('/ciudadania', loginCiudadania);
 router.get('/callback', callback);
+router.get('/logout', logout);
 
 export default router;

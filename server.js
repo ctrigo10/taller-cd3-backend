@@ -25,8 +25,8 @@ app.use(
     cookie: {
       secure: false, // poner en true si usas HTTPS
       httpOnly: true,
-      sameSite: 'lax',      // O 'strict', o 'none' (si usás cross-domain + HTTPS)
-      maxAge: 1000 * 60 * 5 // 5 minutos
+      sameSite: 'lax',       // O 'strict', o 'none' (si usás cross-domain + HTTPS)
+      maxAge: 1000 * 60 * 10 // 10 minutos
     },
   })
 );
@@ -43,19 +43,6 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/test', userRoutes);
 app.use('/api/documents', documentRoutes);
-app.post('/api/test', (req, res) => {
-  console.log('test')
-  //req.session.prueba = 'guardado';
-  console.log('session actualizada:', req.session);
-  res.json({ ok: true });
-});
-
-app.get('/api/test1', (req, res) => {
-  console.log('test')
-  req.session.prueba = 'guardado';
-  console.log('session actualizada:', req.session);
-  res.json({ ok: true });
-});
 
 const PORT = process.env.PORT || 3000;
 

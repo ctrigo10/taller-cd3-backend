@@ -81,6 +81,7 @@ const clientId = process.env.OIDC_CLIENT_ID;
 const secret = process.env.OIDC_CLIENT_SECRET;
 const redirect = process.env.OIDC_REDIRECT_URI;
 const scope = process.env.OIDC_SCOPE;
+const oidcLogout = process.env.OIDC_LOGOUT_REDIRECT_URI;
 
 export const loginCiudadania = (req, res) => {
   const state = crypto.randomBytes(30).toString('hex');
@@ -88,7 +89,16 @@ export const loginCiudadania = (req, res) => {
   req.session.state = state;
   req.session.nonce = nonce;
 
-  const authorizationUrl = `${issuer}/auth?response_type=code&client_id=${clientId}&redirect_uri=${redirect}&scope=${scope}&state=${state}&nonce=${nonce}`;
+  //const authorizationUrl = `${issuer}/auth?response_type=code&client_id=${clientId}&redirect_uri=${redirect}&scope=${scope}&state=${state}&nonce=${nonce}`;
+  const authorizationUrl =
+    `${issuer}/auth` +
+    `?response_type=code` +
+    `&client_id=${clientId}` +
+    `&redirect_uri=${redirect}` +
+    `&scope=${scope}` +
+    `&state=${state}` +
+    `&nonce=${nonce}`;
+
   res.redirect(authorizationUrl);
 };
 
@@ -116,8 +126,9 @@ export const callback = async (req, res) => {
     });
 
     console.log('====== resultado tokenResponse', tokenResponse.data);
-    const { access_token } = tokenResponse.data;
+    const { access_token, id_token } = tokenResponse.data;
     req.session.token = access_token;
+    req.session.id_token = id_token;
 
     const userInfo = await axios.get(`${issuer}/me`, {
       headers: { Authorization: `Bearer ${access_token}` },
@@ -164,4 +175,20 @@ export const callback = async (req, res) => {
       details: err.response?.data || err.message,
     });
   }
+};
+
+export const logout = async (req, res) => {
+  const idToken = req.session.id_token;
+  req.session.destroy(() => ({}));
+  // Limpia la sesión local
+
+  res.clearCookie('connect.sid');
+
+  // Redirige al logout del proveedor
+  const link =
+    `${issuer}/session/end` +
+    `?id_token_hint=${idToken}` +
+    `&post_logout_redirect_uri=${oidcLogout}`;
+  console.log('final---endSessionUrl);', link);
+  res.status(200).json({ link });
 };
