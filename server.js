@@ -11,12 +11,10 @@ import 'dotenv/config';
 
 const app = express();
 
-const corsOptions = {
+app.use(cors({
   origin: process.env.URL_FRONTEND,
   credentials: true,
-};
-
-app.use(cors(corsOptions));
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(

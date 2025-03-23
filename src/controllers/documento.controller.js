@@ -31,8 +31,9 @@ const fileFilter = (req, file, cb) => {
 // Middleware de multer
 const upload = multer({ storage, fileFilter });
 
-export const uploadFile = (req, res, next) => {
+export const uploadFile = (req, res) => {
   console.log('Uploading file', req.file);
+  console.log('Uploading file', req.session);
   if (!req.file) {
     return res.status(400).send('No file uploaded.');
   }
