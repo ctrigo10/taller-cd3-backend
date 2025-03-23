@@ -9,4 +9,9 @@ const router = express.Router();
 
 router.post('/upload', [authJwt.verifyToken], uploadMiddleware, uploadFile);
 
+router.post('/callback', (req, res) => {
+  console.log('Respuesta Aprobador: ', req.body)
+  res.send(req.body)
+})
+
 export default router;

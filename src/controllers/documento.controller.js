@@ -38,7 +38,7 @@ const upload = multer({ storage, fileFilter });
 
 export const uploadFile = async (req, res) => {
   console.log('Uploading file', req.file);
-  console.log('sesion', req.session)
+  console.log('sesion', req.session);
   try {
     if (!req.file) {
       return res.status(400).send('No file uploaded.');
@@ -58,10 +58,11 @@ export const uploadFile = async (req, res) => {
       hashDocumento,
       idTramite: codigoTramite,
       descripcion: `Aprobación documento ${codigoTramite}`,
-      accessToken: req.session.token,
+      //accessToken: req.session.token,
+      accessToken: 'OimA6O0da_lWPr1Gq6_KC0Su43Hg3qm44aijkJmv8aE'
     };
 
-    console.log('dataAprobacion', dataAprobacion.accessToken)
+    console.log('accessToken', dataAprobacion.accessToken)
 
     const urlAprobador = process.env.APROBADOR_URL;
     const tokenAprobador = process.env.APROBADOR_TOKEN;
@@ -74,13 +75,11 @@ export const uploadFile = async (req, res) => {
         },
       }
     );
-    res
-      .status(200)
-      .json({ mensaje: 'Se recupero el base64', datos: response });
+    res.send(response.data);
   } catch (err) {
     console.error(err.response?.data || err.message);
     res.status(500).json({
-      error: 'Error al autenticar',
+      error: 'Error al aprobar',
       details: err.response?.data || err.message,
     });
   }

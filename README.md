@@ -12,3 +12,13 @@ curl --request POST \
   "password": "123456"
 }'
 ```
+
+## Levantar con ngrok
+```bash
+ngrok http --url=valid-oriole-stunning.ngrok-free.app 3000
+```
+
+Variable de entorno en el frontend
+```
+VITE_API_BASE_URL=https://valid-oriole-stunning.ngrok-free.app/api
+```

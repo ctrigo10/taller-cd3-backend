@@ -117,14 +117,13 @@ export const callback = async (req, res) => {
 
     console.log('====== resultado tokenResponse', tokenResponse.data);
     const { access_token } = tokenResponse.data;
+    req.session.token = access_token;
 
     const userInfo = await axios.get(`${issuer}/me`, {
       headers: { Authorization: `Bearer ${access_token}` },
     });
 
     console.log('====== resultado userinfo', userInfo.data);
-    req.session.user = userInfo.data;
-
     // *******************Termina OAUTH2
 
     // Buscar o crear usuario en la base de datos
@@ -147,9 +146,6 @@ export const callback = async (req, res) => {
     const token = jwt.sign({ id: user.id }, process.env.JW_SECRET, {
       expiresIn: 86400, // 24 hours
     });
-
-    req.session.token = token;
-    console.log('-->', req.session);
 
     // Get user roles
     const roles = await user.getRoles();
