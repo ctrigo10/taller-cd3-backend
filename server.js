@@ -16,9 +16,8 @@ const corsOptions = {
   credentials: true
 };
 
+app.set('trust proxy', 1);
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'sesion-secret',
@@ -30,6 +29,8 @@ app.use(
     },
   })
 );
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
   res.json({
@@ -41,6 +42,19 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/test', userRoutes);
 app.use('/api/documents', documentRoutes);
+app.post('/api/test', (req, res) => {
+  console.log('test')
+  //req.session.prueba = 'guardado';
+  console.log('session actualizada:', req.session);
+  res.json({ ok: true });
+});
+
+app.get('/api/test1', (req, res) => {
+  console.log('test')
+  req.session.prueba = 'guardado';
+  console.log('session actualizada:', req.session);
+  res.json({ ok: true });
+});
 
 const PORT = process.env.PORT || 3000;
 

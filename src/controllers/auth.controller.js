@@ -93,6 +93,7 @@ export const loginCiudadania = (req, res) => {
 
 export const callback = async (req, res) => {
   console.log(' ========== query', req.query);
+  console.log(' ========== session', req.session);
   const { code } = req.query;
 
   try {
@@ -146,6 +147,9 @@ export const callback = async (req, res) => {
       expiresIn: 86400, // 24 hours
     });
 
+    req.session.token = token;
+    console.log('-->', req.session);
+
     // Get user roles
     const roles = await user.getRoles();
     const authorities = roles.map((role) => `ROLE_${role.name.toUpperCase()}`);
@@ -158,11 +162,9 @@ export const callback = async (req, res) => {
     });
   } catch (err) {
     console.error(err.response?.data || err.message);
-    res
-      .status(500)
-      .json({
-        error: 'Error al autenticar',
-        details: err.response?.data || err.message,
-      });
+    res.status(500).json({
+      error: 'Error al autenticar',
+      details: err.response?.data || err.message,
+    });
   }
 };
