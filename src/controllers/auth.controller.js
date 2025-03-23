@@ -107,6 +107,10 @@ export const callback = async (req, res) => {
   console.log(' ========== session', req.session);
   const { code } = req.query;
 
+  if (req.query.state !== req.session.state) {
+    return res.status(400).send('Invalid state');
+  }
+
   try {
     const base64 = Buffer.from(`${clientId}:${secret}`).toString('base64');
     const authHeader = `Basic ${base64}`;
