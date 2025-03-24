@@ -58,8 +58,8 @@ export const uploadFile = async (req, res) => {
       hashDocumento,
       idTramite: codigoTramite,
       descripcion: `Aprobación documento ${codigoTramite}`,
-      //accessToken: req.session.token,
-      accessToken: 'OimA6O0da_lWPr1Gq6_KC0Su43Hg3qm44aijkJmv8aE'
+      accessToken: req.session.token,
+      //accessToken: 'OimA6O0da_lWPr1Gq6_KC0Su43Hg3qm44aijkJmv8aE'
     };
 
     console.log('accessToken', dataAprobacion.accessToken)
