@@ -7,8 +7,8 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --header 'User-Agent: insomnia/10.3.1' \
   --data '{
-  "username": "ctrigo",
-  "email": "carlos.trigo@agetic.gob.bo",
+  "username": "123456",
+  "email": "prueba@prueba.bo",
   "password": "123456"
 }'
 ```
