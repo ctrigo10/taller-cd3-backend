@@ -5,7 +5,7 @@ import fs from 'fs';
 // Verificar si el directorio 'uploads' existe, si no, crearlo
 const uploadDir = './uploads/';
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir); // Crea el directorio si no existe
+  fs.mkdirSync(uploadDir, { recursive: true }); // Crea el directorio si no existe
 }
 
 // Configuración de multer para almacenamiento
